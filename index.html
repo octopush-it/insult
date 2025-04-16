@@ -10,9 +10,10 @@
       height: 100%;
       margin: 0;
       font-family: sans-serif;
-      background-color: #808080;
+      background-color: #808080;  /* medium grey background */
+      color: #FFFFFF;             /* white text by default */
     }
-    /* Container to center the content */ 
+    /* Centered container with a stylized border */
     #insult-container {
       display: flex;
       flex-direction: column;
@@ -21,6 +22,10 @@
       height: 100%;
       text-align: center;
       padding: 20px;
+      margin: 20px;
+      border: 4px solid #FFFFFF;   /* white border */
+      border-radius: 15px;         /* rounded corners */
+      background-color: rgba(0, 0, 0, 0.3);  /* semi-transparent dark background for contrast */
     }
     #insult {
       font-size: 2em;
@@ -28,7 +33,6 @@
     }
     #instruction {
       font-size: 0.9em;
-      color: #FFFFFF;
     }
   </style>
 </head>

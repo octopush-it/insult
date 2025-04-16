@@ -1,1 +1,1 @@
-# insult
+# goon's insult file

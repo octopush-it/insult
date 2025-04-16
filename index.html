@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- Ensure the website is mobile friendly -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Goon's Insult Generator</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: sans-serif;
+      background-color: #f0f0f0;
+    }
+    /* Container to center the content */
+    #insult-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      text-align: center;
+      padding: 20px;
+    }
+    #insult {
+      font-size: 2em;
+      margin-bottom: 1em;
+    }
+    #instruction {
+      font-size: 0.9em;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div id="insult-container">
+    <div id="insult">Loading insult...</div>
+    <div id="instruction">Tap or click anywhere to generate a new insult</div>
+  </div>
+
+  <script>
+    // Global arrays to hold words from each file.
+    let firstWords = [];
+    let secondWords = [];
+    let nouns = [];
+
+    // Function to load a text file and return a promise that resolves to an array of words.
+    function loadWords(filename) {
+      return fetch(filename)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error ${response.status}`);
+          }
+          return response.text();
+        })
+        .then(data => {
+          // Split the data by newlines, trim whitespace, and filter out empty entries.
+          return data.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
+        })
+        .catch(error => {
+          console.error(`Error loading ${filename}:`, error);
+          return [];
+        });
+    }
+
+    // Function to generate a random insult from the loaded words.
+    function generateInsult() {
+      // Ensure there is at least one word in each array.
+      if (firstWords.length && secondWords.length && nouns.length) {
+        const first = firstWords[Math.floor(Math.random() * firstWords.length)];
+        const second = secondWords[Math.floor(Math.random() * secondWords.length)];
+        const noun = nouns[Math.floor(Math.random() * nouns.length)];
+        return `${first} ${second} ${noun}`;
+      } else {
+        return "Insufficient words for insult";
+      }
+    }
+
+    // Function to update the insult display.
+    function updateInsult() {
+      const insultElement = document.getElementById('insult');
+      insultElement.textContent = generateInsult();
+    }
+
+    // Load all words from resource files and initialize insult generation.
+    Promise.all([
+      loadWords('firstWords.txt'),
+      loadWords('secondWords.txt'),
+      loadWords('nouns.txt')
+    ]).then(results => {
+      [firstWords, secondWords, nouns] = results;
+      updateInsult();
+    });
+
+    // Listen for clicks/taps anywhere on the document to update the insult.
+    document.addEventListener('click', updateInsult);
+  </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- Ensure the website is mobile friendly -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Goon's Insult Generator</title>
+<style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Impact', sans-serif;
+      background: url('bgimage.png') repeat;
+      color: #fff;
+    }
+    header {
+      background: rgba(0,0,0,0.7);
+      padding: 20px;
+      text-align: center;
+    }
+    header img {
+      height: 100px;
+    }
+    nav {
+      background: #111;
+      display: flex;
+      justify-content: center;
+      padding: 10px;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 20px;
+      font-size: 20px;
+      text-shadow: 2px 2px 0 #000;
+    }
+    nav a:hover {
+      color: #f0f;
+    }
+    .content {
+      padding: 40px;
+      text-align: center;
+      background: rgba(0,0,0,0.6);
+      margin: 20px;
+      border-radius: 10px;
+    }
+    h1 {
+      font-size: 48px;
+      color: #ff0;
+      text-shadow: 3px 3px 0 #000;
+    }
+    p {
+      font-size: 20px;
+    }
+ 
+ /* Centered container with a stylized border */
+    #insult-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 50%;
+      text-align: center;
+      padding: 5px;
+      margin: 5px;
+      border: 4px solid #FFFFFF;   /* white border */
+      border-radius: 15px;         /* rounded corners */
+      background-color: rgba(0, 0, 0, 0.3);  /* semi-transparent dark background for contrast */
+    }
+    #insult {
+      font-size: 2em;
+      margin-bottom: 1em;
+    }
+    #instruction {
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="goon-gaming-logo.png" alt="Goon Gaming Logo">
+  </header>
+  <nav>
+    <a href="index.html">About</a>
+    <a href="goons.html">Goons</a>
+    <a href="insults.html">Insults</a>
+	<a href="servers.html">Servers</a>
+  </nav>
+ <div class="content">
+  <h1>Goon Gaming Insult Generator</h1>
+
+  <div id="insult-container">
+    <div id="insult">Loading insult...</div>
+    <div id="instruction">Tap or click anywhere to generate a new insult</div>
+  </div>
+</div>
+  <script>
+    // Global arrays to hold words from each file.
+    let firstWords = [];
+    let secondWords = [];
+    let nouns = [];
+
+    // Function to load a text file and return a promise that resolves to an array of words.
+    function loadWords(filename) {
+      return fetch(filename)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error ${response.status}`);
+          }
+          return response.text();
+        })
+        .then(data => {
+          // Split the data by newlines, trim whitespace, and filter out empty entries.
+          return data.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
+        })
+        .catch(error => {
+          console.error(`Error loading ${filename}:`, error);
+          return [];
+        });
+    }
+
+    // Function to generate a random insult from the loaded words.
+    function generateInsult() {
+      // Ensure there is at least one word in each array.
+      if (firstWords.length && secondWords.length && nouns.length) {
+        const first = firstWords[Math.floor(Math.random() * firstWords.length)];
+        const second = secondWords[Math.floor(Math.random() * secondWords.length)];
+        const noun = nouns[Math.floor(Math.random() * nouns.length)];
+        return `${first} ${second} ${noun}`;
+      } else {
+        return "Insufficient words for insult";
+      }
+    }
+
+    // Function to update the insult display.
+    function updateInsult() {
+      const insultElement = document.getElementById('insult');
+      insultElement.textContent = generateInsult();
+    }
+
+    // Load all words from resource files and initialize insult generation.
+    Promise.all([
+      loadWords('firstWords.txt'),
+      loadWords('secondWords.txt'),
+      loadWords('nouns.txt')
+    ]).then(results => {
+      [firstWords, secondWords, nouns] = results;
+      updateInsult();
+    });
+
+    // Listen for clicks/taps anywhere on the document to update the insult.
+    document.addEventListener('click', updateInsult);
+  </script>
+</body>
+</html>

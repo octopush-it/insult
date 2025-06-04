@@ -51,9 +51,43 @@
     p {
       font-size: 20px;
     }
+
+	/* background video */
+	#bgVideo{
+	  position: fixed;
+	  top:0; left:0;
+	  width:100vw; height:100vh;
+	  object-fit:cover;     /* fill screen, crop if needed   */
+	  z-index:-1;           /* sit behind everything         */
+	  pointer-events:none;  /* clicks pass through           */
+	  opacity:0;            /* fade-in handled below         */
+	  transition:opacity .6s ease;
+	  filter: blur(4px);          /* the blur itself          */
+      transform: scale(1.07);  
+	}
+
+	/* fade the video in when metadata loaded */
+	#bgVideo.ready{ opacity:1; }
+
+	/* optional: disable heavy background on small mobiles */
+	@media (max-width:768px){
+	  #bgVideo{ display:none; }
+	}
   </style>
 </head>
 <body>
+  <video
+    id="bgVideo"
+    playsinline     
+    autoplay
+    muted
+    loop
+    preload="auto"
+    poster="bg-video.jpg" >
+    <!-- 2-format fallback for widest support -->
+    <source src="bg-video-loop.mp4"  type="video/mp4"  />
+    <source src="bg-video-loop.webm" type="video/webm" />
+  </video>
   <header>
     <img src="goon-gaming-logo.png" alt="Goon Gaming Logo">
   </header>
@@ -67,7 +101,10 @@
     <h1>Goon Gaming</h1>
     <p>Welcome to the wild world of Goon Gaming. We bring you hardcore style, no-filter attitude, and the grittiest crew in gaming.</p>
   </div>
+  <script>
+  const vid = document.getElementById('bgVideo');
+  /* when the first frame is available, show it */
+  vid.addEventListener('loadeddata', () => vid.classList.add('ready'));
+</script>
 </body>
 </html>
-
-<!-- Repeat similar structure for goons.html and insults.html with adjusted titles and content -->
